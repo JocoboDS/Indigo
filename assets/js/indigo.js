@@ -344,23 +344,25 @@ function setupPostForm2() {
         }
         Olv.EntryForm.setupFormStatus($("#post-form"), $.Deferred());
     }
-    function expandTextBox() {
-        var postForm = $("#post-form");
-        var newHeight;
-        var currHeight = parseInt(postForm.css('maxHeight'), 10)
-        if (!document.getElementById("post-form").classList.contains("expanded")) {
-            newHeight = currHeight + 500;
-            postForm.css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
-            postForm.addClass("expanded");
-            $("#expand-textarea").addClass("expanded");
-            $("#post-textarea").addClass("expanded");
-        } else {
-            newHeight = currHeight - 500;
-            postForm.css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
-            postForm.removeClass("expanded");
-            $("#expand-textarea").removeClass("expanded");
-            $("#post-textarea").removeClass("expanded");
-        }
+}
+
+function expandTextBox() {
+    var postForm = $("#post-form");
+    if (postForm.length === 0) postForm = $("#reply-form");
+    var newHeight;
+    var currHeight = parseInt(postForm.css('maxHeight'), 10)
+    if (!postForm.hasClass("expanded")) {
+        newHeight = currHeight + 500;
+        postForm.css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
+        postForm.addClass("expanded");
+        $("#expand-textarea").addClass("expanded");
+        $("#post-textarea").addClass("expanded");
+    } else {
+        newHeight = currHeight - 500;
+        postForm.css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
+        postForm.removeClass("expanded");
+        $("#expand-textarea").removeClass("expanded");
+        $("#post-textarea").removeClass("expanded");
     }
 }
 
@@ -2764,6 +2766,7 @@ var menu = $("div.textarea-with-menu");
         b.Entry.setupHiddenContents(e),
         b.Entry.setupMoreRepliesButtons(e);
         var h = a("#reply-form");
+        $("#expand-textarea").on("click", expandTextBox);
         b.Guest.isGuest() || (b.Entry.setupPostYeahButton(e),
         b.Entry.setupEditButtons(e),
         b.EntryForm.setupSubmission(h, e),
