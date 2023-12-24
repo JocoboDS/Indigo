@@ -351,13 +351,13 @@ function setupPostForm2() {
         if (!document.getElementById("post-form").classList.contains("expanded")) {
             newHeight = currHeight + 500;
             postForm.css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
-            document.getElementById("post-form").classList.add("expanded");
-            document.getElementById("post-textarea").classList.add("expanded");
+            postForm.addClass("expanded");
+            $("#post-textarea").addClass("expanded");
         } else {
             newHeight = currHeight - 500;
             postForm.css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
-            document.getElementById("post-textarea").classList.remove("expanded");
-            document.getElementById("post-form").classList.remove("expanded");
+            postForm.removeClass("expanded");
+            $("#post-textarea").removeClass("expanded");
         }
     }
 }
