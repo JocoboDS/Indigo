@@ -69,12 +69,16 @@
                     {{if eq .Post.CreatedBy .CurrentUser.ID}}
                         <div id="post-edit" class="none">
                             <form data-action="/posts/{{.Post.ID}}/edit" id="edit-form" method="post">
-                                <div class="feeling-selector js-feeling-selector test-feeling-selector"><label class="symbol feeling-button feeling-button-normal checked"><input type="radio" name="feeling_id" value="0"{{if eq .Post.Feeling 0}} checked{{end}}><span class="symbol-label">normal</span></label><label class="symbol feeling-button feeling-button-happy"><input type="radio" name="feeling_id" value="1"{{if eq .Post.Feeling 1}} checked{{end}}><span class="symbol-label">happy</span></label><label class="symbol feeling-button feeling-button-like"><input type="radio" name="feeling_id" value="2"{{if eq .Post.Feeling 2}} checked{{end}}><span class="symbol-label">like</span></label><label class="symbol feeling-button feeling-button-surprised"><input type="radio" name="feeling_id" value="3"{{if eq .Post.Feeling 3}} checked{{end}}><span class="symbol-label">surprised</span></label><label class="symbol feeling-button feeling-button-frustrated"><input type="radio" name="feeling_id" value="4"{{if eq .Post.Feeling 4}} checked{{end}}><span class="symbol-label">frustrated</span></label><label class="symbol feeling-button feeling-button-puzzled"><input type="radio" name="feeling_id" value="5"{{if eq .Post.Feeling 5}} checked{{end}}><span class="symbol-label">puzzled</span></label></div>
                                 <div class="textarea-container">
-                                    <textarea name="body" class="textarea-text textarea " maxlength="2000" placeholder="Edit your post." data-required>{{.Post.BodyText}}</textarea>
+                                    <textarea name="body" class="textarea-text textarea " maxlength="2000" placeholder="Edit your post." rows="6" data-required>{{.Post.BodyText}}</textarea>
                                 </div>
-                                <div class="post-form-footer-options">
-                                    <label class="spoiler-button symbol"><input id="is_spoiler" name="is_spoiler" type="checkbox" value="1"{{if .Post.IsSpoiler}} checked{{end}}>Spoilers</label>
+                                <div class="post-formatting">
+                                    <div class="feeling-selector js-feeling-selector"><label class="symbol feeling-button feeling-button-normal checked"><input type="radio" name="feeling_id" value="0" checked><span class="symbol-label">normal</span></label><label class="symbol feeling-button feeling-button-happy"><input type="radio" name="feeling_id" value="1"><span class="symbol-label">happy</span></label><label class="symbol feeling-button feeling-button-like"><input type="radio" name="feeling_id" value="2"><span class="symbol-label">like</span></label><label class="symbol feeling-button feeling-button-surprised"><input type="radio" name="feeling_id" value="3"><span class="symbol-label">surprised</span></label><label class="symbol feeling-button feeling-button-frustrated"><input type="radio" name="feeling_id" value="4"><span class="symbol-label">frustrated</span></label><label class="symbol feeling-button feeling-button-puzzled"><input type="radio" name="feeling_id" value="5"><span class="symbol-label">puzzled</span></label></div>
+                                    <div class="post-form-footer-options">
+                                        <div class="post-form-footer-option-inner post-form-spoiler js-post-form-spoiler test-post-form-spoiler">
+                                            <label class="spoiler-button symbol"><input type="checkbox" id="is_spoiler" name="is_spoiler" value="1" {{if .Post.IsSpoiler}} checked{{end}}></label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="post-form-privacy">
                                     <p>Who should be able to see this post?</p>
@@ -272,7 +276,6 @@
                 {{if (and (.CurrentUser.Username) (not .IsBlocked))}}
                     <form id="reply-form" class="for-identified-user" method="post" action="/posts/{{.Post.ID}}/comments">
                         <input type="hidden" name="csrfmiddlewaretoken" value="{{.CurrentUser.CSRFToken}}">
-                        <div class="feeling-selector js-feeling-selector"><label class="symbol feeling-button feeling-button-normal checked"><input type="radio" name="feeling_id" value="0" checked><span class="symbol-label">normal</span></label><label class="symbol feeling-button feeling-button-happy"><input type="radio" name="feeling_id" value="1"><span class="symbol-label">happy</span></label><label class="symbol feeling-button feeling-button-like"><input type="radio" name="feeling_id" value="2"><span class="symbol-label">like</span></label><label class="symbol feeling-button feeling-button-surprised"><input type="radio" name="feeling_id" value="3"><span class="symbol-label">surprised</span></label><label class="symbol feeling-button feeling-button-frustrated"><input type="radio" name="feeling_id" value="4"><span class="symbol-label">frustrated</span></label><label class="symbol feeling-button feeling-button-puzzled"><input type="radio" name="feeling_id" value="5"><span class="symbol-label">puzzled</span></label></div>
                         <div class="textarea-with-menu active-text">
                             <menu class="textarea-menu">
                                 <li><label class="textarea-menu-text"><input type="radio" name="post_type" value="0"></label></li>
@@ -280,7 +283,7 @@
                                 <span class="character-count">2000</span>
                             </menu>
                             <div class="textarea-container">
-                                <textarea name="body" class="textarea-text textarea" maxlength="2000" placeholder="Add a comment here." data-open-folded-form data-required></textarea>
+                                <textarea name="body" id="post-textarea" class="textarea-text textarea" maxlength="2000" placeholder="Add a comment here." rows="4" data-open-folded-form data-required></textarea>
                             </div>
                             <div class="textarea-memo none">
                                 <div id="memo-drawboard-page" class="none">
@@ -308,25 +311,26 @@
                                 </div>
                             </div>
                         </div>
-                        <label class="file-button-container">
-                            <span class="input-label">Attachment <span>Images, audio and videos are allowed.
-                                {{if .MaxUploadSize}}Maximum upload size: {{.MaxUploadSize}}{{end}}
-                            </span></span>
-                            <span class="button file-upload-button">Upload</span>
-                            <input accept="image/*, audio/*, video/*" type="file" class="file-button none">
-                            <input type="hidden" name="image">
-                            <input type="hidden" name="attachment_type">
-                            <div class="screenshot-container still-image preview-container" style="display: none;">
-                                <img class="preview-image none">
-                                <video class="preview-video none" controls></video>
-                                <audio class="preview-audio none" controls></audio>
+                        <div class="post-formatting">
+                            <div class="feeling-selector js-feeling-selector"><label class="symbol feeling-button feeling-button-normal checked"><input type="radio" name="feeling_id" value="0" checked><span class="symbol-label">normal</span></label><label class="symbol feeling-button feeling-button-happy"><input type="radio" name="feeling_id" value="1"><span class="symbol-label">happy</span></label><label class="symbol feeling-button feeling-button-like"><input type="radio" name="feeling_id" value="2"><span class="symbol-label">like</span></label><label class="symbol feeling-button feeling-button-surprised"><input type="radio" name="feeling_id" value="3"><span class="symbol-label">surprised</span></label><label class="symbol feeling-button feeling-button-frustrated"><input type="radio" name="feeling_id" value="4"><span class="symbol-label">frustrated</span></label><label class="symbol feeling-button feeling-button-puzzled"><input type="radio" name="feeling_id" value="5"><span class="symbol-label">puzzled</span></label></div>
+                            <span id="expand-textarea">V</span>
+                            <div class="post-form-footer-options">
+                                <div class="post-form-footer-option-inner post-form-spoiler js-post-form-spoiler test-post-form-spoiler">
+                                    <label class="spoiler-button symbol"><input type="checkbox" id="is_spoiler" name="is_spoiler" value="1"></label>
+                                </div>
                             </div>
-                            <script src="/assets/js/upload.js"></script>
-                        </label>
-                        <div class="post-form-footer-options">
-                            <div class="post-form-footer-option-inner post-form-spoiler js-post-form-spoiler test-post-form-spoiler">
-                            <label class="spoiler-button symbol"><input type="checkbox" id="is_spoiler" name="is_spoiler" value="1">Spoilers</label>
-                            </div>
+                            <label class="file-button-container">
+                                <span class="file-upload-button">X</span>
+                                <input accept="image/*, audio/*, video/*" type="file" class="file-button none">
+                                <input type="hidden" name="image">
+                                <input type="hidden" name="attachment_type">
+                                <div class="screenshot-container still-image preview-container" style="display: none;">
+                                        <img class="preview-image none">
+                                        <video class="preview-video none" controls></video>
+                                        <audio class="preview-audio none" controls></audio>
+                                    </div>
+                                <script src="/assets/js/upload.js"></script>
+                            </label>
                         </div>
                         <div class="form-buttons">
                             <input type="submit" class="black-button reply-button disabled" value="Send" data-community-id="{{.Community.ID}}" data-url-id="{{.Post.ID}}" data-post-content-type="text" data-post-with-screenshot="nodata" disabled>

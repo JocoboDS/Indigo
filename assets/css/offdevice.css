@@ -2802,6 +2802,9 @@ form.search input[type="submit"] {
 #expand-textarea.expanded {
   transform: rotate(180deg);
 }
+#expand-textarea.expanded:hover {
+  transform: rotate(180deg) translateY(5px);
+}
 #expand-textarea {
   font-family: "MiiverseSymbols", sans-serif;
   float: right;

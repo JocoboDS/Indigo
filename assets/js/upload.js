@@ -23,7 +23,9 @@ function postFile(file, fileType, isDrawing, inputName) {
     if(!fileType.startsWith("image/") && !fileType.startsWith("audio/") && !fileType.startsWith("video/")) return $("input[name=image]").val(""), Olv.showMessage("Error", "Invalid file type."), $(".file-button").removeAttr("disabled"), $(".file-button").val(null), void $(".file-upload-button").text("X");
 
     var formData = new FormData();
-    var isExpanded = document.getElementById("post-form").classList.contains("expanded");
+    var postForm = $("#post-form");
+    if (postForm.length === 0) postForm = $("#reply-form");
+    var isExpanded = postForm.hasClass("expanded");
     var currHeight = (isExpanded ? 750 : 285);
     formData.append(inputName, file);
     var csrfTokenData = Olv.Form.csrftoken({});
