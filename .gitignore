@@ -10,7 +10,11 @@ Indigo
 # my personal configs
 config-my.json
 config-s.json
+config.json
 # default images folder or symlink
 images
 images/
 images/*
+# my ide junk
+.idea
+Indigo.exe

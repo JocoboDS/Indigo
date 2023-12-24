@@ -16,13 +16,15 @@ function showError(error) {
     }
     $(".file-button").removeAttr("disabled");
     $(".file-button").val(null);
-    $(".file-upload-button").text("Upload");
+    $(".file-upload-button").text("X");
     Olv.showMessage("Attachment upload failed", "There was an error trying to upload your attachment.\nThe response received from the server was this:\n" + error.responseText);
 }
 function postFile(file, fileType, isDrawing, inputName) {
-    if(!fileType.startsWith("image/") && !fileType.startsWith("audio/") && !fileType.startsWith("video/")) return $("input[name=image]").val(""), Olv.showMessage("Error", "Invalid file type."), $(".file-button").removeAttr("disabled"), $(".file-button").val(null), void $(".file-upload-button").text("Upload");
+    if(!fileType.startsWith("image/") && !fileType.startsWith("audio/") && !fileType.startsWith("video/")) return $("input[name=image]").val(""), Olv.showMessage("Error", "Invalid file type."), $(".file-button").removeAttr("disabled"), $(".file-button").val(null), void $(".file-upload-button").text("X");
 
     var formData = new FormData();
+    var isExpanded = document.getElementById("post-form").classList.contains("expanded");
+    var currHeight = (isExpanded ? 750 : 285);
     formData.append(inputName, file);
     var csrfTokenData = Olv.Form.csrftoken({});
     formData.append('csrfmiddlewaretoken', csrfTokenData.csrfmiddlewaretoken);
@@ -46,16 +48,27 @@ function postFile(file, fileType, isDrawing, inputName) {
                 $(".preview-audio").removeClass("none");
                 $(".preview-video").addClass("none");
                 $("input[name=attachment_type]").val("1");
+                $("#post-form").css({'max-height': `${currHeight + 50}px`, 'height': `${currHeight + 50}px`});
+                $(".post-formatting").css('max-height', '180px');
             } else if(fileType.startsWith("video/")) {
                 $(".preview-video").attr("src", URL.createObjectURL(file));
                 $(".preview-image").addClass("none");
                 $(".preview-audio").addClass("none");
                 $(".preview-video").removeClass("none");
                 $("input[name=attachment_type]").val("2");
+                $("#post-form").css({'max-height': `${currHeight + 300}px`, 'height': `${currHeight + 300}px`});
+                $(".post-formatting").css('max-height', '350px');
             } else if($(".file-upload-button").hasClass("for-avatar")) {
                 $(".preview-image").attr("src", URL.createObjectURL(file));
                 $(".preview-image").removeClass("none");
             } else {
+                var img = new Image();
+                img.src = URL.createObjectURL(file);
+                img.onload = function () {
+                    var newHeight = currHeight + (this.height > 300 ? 300 : this.height);
+                    $("#post-form").css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
+                    $(".post-formatting").css('max-height', `${50 + (this.height > 300 ? 300 : this.height)}px`);
+                }
                 $("input[name=" + inputName + "]").siblings(".screenshot-container").children(".preview-image").attr("src", URL.createObjectURL(file));
                 $("input[name=" + inputName + "]").siblings(".screenshot-container").children(".preview-image").removeClass("none");
                 $(".preview-audio").addClass("none");
@@ -76,7 +89,7 @@ function postFile(file, fileType, isDrawing, inputName) {
             if(!isDrawing) {
                 Olv.Form.toggleDisabled($(".file-button"), false);
                 $(".file-button").val(null);
-                $(".file-upload-button").text("Upload");
+                $(".file-upload-button").text("X");
             }
         },
         error: function(error) {
@@ -87,13 +100,12 @@ function postFile(file, fileType, isDrawing, inputName) {
 
 
 function handleChange(event) {
-    console.log(event);
     var inputName = "image";
     if($(this).attr("id") !== undefined) inputName = $(this).attr("id");
     if(this.files.length) {
         Olv.Form.toggleDisabled($("input.post-button"), true);
         $("input[name=" + inputName + "]").siblings(".file-button").attr("disabled", "disabled");
-        $("input[name=" + inputName + "]").siblings(".file-upload-button").text("Uploading...");
+        $("input[name=" + inputName + "]").siblings(".file-upload-button").text("X");
         var fileType = this.files[0].type;
         var file = this.files[0];
         if(($(".file-upload-button").hasClass("for-avatar") || inputName === "icon") && fileType !== "image/gif") {

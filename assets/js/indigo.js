@@ -268,8 +268,8 @@ function setupPostForm2() {
     $("label.textarea-menu-poll").on("click", switchpoll);
     $('button.add-option').on('click', addOption);
     $('button.delete').on('click', deleteOption);
-
     $(".post-button").on("click", switchtext);
+    $(".expand-textarea").on("click", expandTextBox);
     function switchtext() {
         var menu = $("div.textarea-with-menu");
         menu.removeClass("active-memo");
@@ -343,6 +343,22 @@ function setupPostForm2() {
             $("button.delete").on("click", deleteOption);
         }
         Olv.EntryForm.setupFormStatus($("#post-form"), $.Deferred());
+    }
+    function expandTextBox() {
+        var postForm = $("#post-form");
+        var newHeight;
+        var currHeight = parseInt(postForm.css('maxHeight'), 10)
+        if (!document.getElementById("post-form").classList.contains("expanded")) {
+            newHeight = currHeight + 500;
+            postForm.css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
+            document.getElementById("post-form").classList.add("expanded");
+            document.getElementById("post-textarea").classList.add("expanded");
+        } else {
+            newHeight = currHeight - 500;
+            postForm.css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
+            document.getElementById("post-textarea").classList.remove("expanded");
+            document.getElementById("post-form").classList.remove("expanded");
+        }
     }
 }
 
