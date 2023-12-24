@@ -269,7 +269,7 @@ function setupPostForm2() {
     $('button.add-option').on('click', addOption);
     $('button.delete').on('click', deleteOption);
     $(".post-button").on("click", switchtext);
-    $(".expand-textarea").on("click", expandTextBox);
+    $("#expand-textarea").on("click", expandTextBox);
     function switchtext() {
         var menu = $("div.textarea-with-menu");
         menu.removeClass("active-memo");
@@ -352,11 +352,13 @@ function setupPostForm2() {
             newHeight = currHeight + 500;
             postForm.css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
             postForm.addClass("expanded");
+            $("#expand-textarea").addClass("expanded");
             $("#post-textarea").addClass("expanded");
         } else {
             newHeight = currHeight - 500;
             postForm.css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
             postForm.removeClass("expanded");
+            $("#expand-textarea").removeClass("expanded");
             $("#post-textarea").removeClass("expanded");
         }
     }

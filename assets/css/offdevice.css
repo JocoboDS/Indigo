@@ -2737,14 +2737,14 @@ form.search input[type="submit"] {
   *zoom: 1;
   font-size: 25px;
 }
-.feeling-selector .feeling-button, .file-upload-button, .spoiler-button, .expand-textarea {
+.feeling-selector .feeling-button, .file-upload-button, .spoiler-button, #expand-textarea {
   font-weight: normal !important;
   color: #FFFFFF;
   text-shadow: 0px 1px 6px #000;
   -ms-filter: progid:DXImageTransform.Microsoft.DropShadow(offx=0px, offy=1px, color=#000);
   transition: transform 0.1s;
 }
-.file-upload-button, .spoiler-button, .expand-textarea {
+.file-upload-button, .spoiler-button, #expand-textarea {
   font-size: 30px;
 }
 .feeling-selector .feeling-button.checked, .spoiler-button.checked {
@@ -2796,15 +2796,18 @@ form.search input[type="submit"] {
 .feeling-selector .feeling-button-puzzled:before {
   content: "U";
 }
-.expand-textarea:hover {
+#expand-textarea:hover {
   transform: translateY(5px);
 }
-.expand-textarea {
+#expand-textarea.expanded {
+  transform: rotate(180deg);
+}
+#expand-textarea {
   font-family: "MiiverseSymbols", sans-serif;
   float: right;
   padding: 0 2%;
   cursor: pointer;
-  transition: transform 0.1s;
+  transition: transform 0.2s;
 }
 .topic-categories-container {
   position: relative;
