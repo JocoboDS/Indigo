@@ -89,7 +89,9 @@ function postFile(file, fileType, isDrawing, inputName) {
             if(!isDrawing) {
                 Olv.Form.toggleDisabled($(".file-button"), false);
                 $(".file-button").val(null);
+                $(".file-upload-button").removeClass("spinning");
                 $(".file-upload-button").text("X");
+
             }
         },
         error: function(error) {
@@ -105,7 +107,7 @@ function handleChange(event) {
     if(this.files.length) {
         Olv.Form.toggleDisabled($("input.post-button"), true);
         $("input[name=" + inputName + "]").siblings(".file-button").attr("disabled", "disabled");
-        $("input[name=" + inputName + "]").siblings(".file-upload-button").text("X");
+        $("input[name=" + inputName + "]").siblings(".file-upload-button").addClass("spinning");
         var fileType = this.files[0].type;
         var file = this.files[0];
         if(($(".file-upload-button").hasClass("for-avatar") || inputName === "icon") && fileType !== "image/gif") {
