@@ -25,8 +25,8 @@ function postFile(file, fileType, isDrawing, inputName) {
     var formData = new FormData();
     var postForm = $("#post-form");
     if (postForm.length === 0) postForm = $("#reply-form");
-    var isExpanded = postForm.hasClass("expanded");
-    var currHeight = (isExpanded ? 750 : 285);
+    var currHeight = parseInt(postForm.css('maxHeight'), 10);
+    var currImgSize = $("#preview-container")[0].offsetHeight;
     formData.append(inputName, file);
     var csrfTokenData = Olv.Form.csrftoken({});
     formData.append('csrfmiddlewaretoken', csrfTokenData.csrfmiddlewaretoken);
@@ -50,7 +50,7 @@ function postFile(file, fileType, isDrawing, inputName) {
                 $(".preview-audio").removeClass("none");
                 $(".preview-video").addClass("none");
                 $("input[name=attachment_type]").val("1");
-                $("#post-form").css({'max-height': `${currHeight + 50}px`, 'height': `${currHeight + 50}px`});
+                $("#post-form").css({'max-height': `${currHeight - currImgSize + 65}px`, 'height': `${currHeight - currImgSize + 65}px`});
                 $(".post-formatting").css('max-height', '180px');
             } else if(fileType.startsWith("video/")) {
                 $(".preview-video").attr("src", URL.createObjectURL(file));
@@ -58,7 +58,7 @@ function postFile(file, fileType, isDrawing, inputName) {
                 $(".preview-audio").addClass("none");
                 $(".preview-video").removeClass("none");
                 $("input[name=attachment_type]").val("2");
-                $("#post-form").css({'max-height': `${currHeight + 300}px`, 'height': `${currHeight + 300}px`});
+                $("#post-form").css({'max-height': `${currHeight - currImgSize + 305}px`, 'height': `${currHeight - currImgSize + 305}px`});
                 $(".post-formatting").css('max-height', '350px');
             } else if($(".file-upload-button").hasClass("for-avatar")) {
                 $(".preview-image").attr("src", URL.createObjectURL(file));
@@ -67,9 +67,12 @@ function postFile(file, fileType, isDrawing, inputName) {
                 var img = new Image();
                 img.src = URL.createObjectURL(file);
                 img.onload = function () {
-                    var newHeight = currHeight + (this.height > 300 ? 300 : this.height);
-                    $("#post-form").css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
-                    $(".post-formatting").css('max-height', `${50 + (this.height > 300 ? 300 : this.height)}px`);
+                    if (isDrawing) $("#post-form").css({'max-height': `${currHeight + 180}px`, 'height': `${currHeight + 180}px`});
+                    else {
+                        var newHeight = currHeight + (this.height > 300 ? 300 : this.height) - currImgSize;
+                        $("#post-form").css({'max-height': `${newHeight + 5}px`, 'height': `${newHeight + 5}px`});
+                        $(".post-formatting").css('max-height', `${50 + (this.height > 300 ? 300 : this.height)}px`);
+                    }
                 }
                 $("input[name=" + inputName + "]").siblings(".screenshot-container").children(".preview-image").attr("src", URL.createObjectURL(file));
                 $("input[name=" + inputName + "]").siblings(".screenshot-container").children(".preview-image").removeClass("none");

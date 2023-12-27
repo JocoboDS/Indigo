@@ -221,12 +221,20 @@ function openDrawboardModal() {
 }
 function setupPostForm2() {
     var letters = ["a", "b", "c", "d", "e"];
+    var prevHeight = 0;
     $("label.textarea-menu-memo > input").on("click", function(e) {
         if (openDrawboardModal()) {
+            var drawingExists =  $("#drawing").length;
             var menu = $("div.textarea-with-menu");
             var memo = $("div.textarea-memo");
             var text = $("div.textarea-container");
             var poll = $("div.textarea-poll");
+            if (!menu.hasClass("active-memo")) {
+                var currHeight = parseInt(postForm.css('maxHeight'), 10);
+                postForm.css({'max-height': `${400 + (drawingExists * 180)}px`, 'height': `${400 + (drawingExists * 180)}`});
+                if (menu.hasClass("active-text")) prevHeight = currHeight;
+                $("#preview-container").addClass("none");
+            }
             if (menu.hasClass("active-text") || menu.hasClass("active-poll")) {
                 menu.removeClass("active-text");
                 menu.removeClass("active-poll");
@@ -236,7 +244,7 @@ function setupPostForm2() {
                 poll.addClass("none");
                 $(".character-count").addClass("none");
             }
-            if($("#drawing").length) {
+            if(drawingExists) {
                 Olv.Form.toggleDisabled($("input.post-button"), false);
             } else {
                 Olv.Form.toggleDisabled($("input.post-button"), true);
@@ -270,8 +278,19 @@ function setupPostForm2() {
     $('button.delete').on('click', deleteOption);
     $(".post-button").on("click", switchtext);
     $("#expand-textarea").on("click", expandTextBox);
+
+    var postForm = $("#post-form");
+    if (postForm.length === 0) postForm = $("#reply-form");
     function switchtext() {
+        var currHeight = parseInt(postForm.css('maxHeight'), 10);
         var menu = $("div.textarea-with-menu");
+        if (!menu.hasClass("active-text")) {
+            var offset = 0;
+            if (menu.hasClass("active-memo")) currHeight = prevHeight;
+            else offset = ($(".url-form").length + 1) * 49.5;
+            postForm.css({'max-height': `${currHeight - offset}px`, 'height': `${currHeight - offset}px`});
+            $("#preview-container").removeClass("none");
+        }
         menu.removeClass("active-memo");
         menu.removeClass("active-poll");
         menu.addClass("active-text");
@@ -283,7 +302,16 @@ function setupPostForm2() {
         Olv.EntryForm.setupFormStatus($("#post-form"), $.Deferred());
     }
     function switchpoll() {
+        var currHeight = parseInt(postForm.css('maxHeight'), 10);
         var menu = $("div.textarea-with-menu");
+        if (!menu.hasClass("active-poll")) {
+            console.log(prevHeight);
+            var offset = 0;
+            if (menu.hasClass("active-memo")) currHeight = prevHeight;
+            offset = ($(".url-form").length + 1) * 49.5;
+            postForm.css({'max-height': `${currHeight + offset}px`, 'height': `${currHeight + offset}px`});
+            $("#preview-container").removeClass("none");
+        }
         menu.removeClass("active-text");
         menu.removeClass("active-memo");
         menu.addClass("active-poll");
@@ -295,6 +323,8 @@ function setupPostForm2() {
         Olv.EntryForm.setupFormStatus($("#post-form"), $.Deferred());
     }
     function addOption() {
+        var currHeight = parseInt(postForm.css('maxHeight'), 10);
+        postForm.css({'max-height': `${currHeight + 50}px`, 'height': `${currHeight + 50}px`});
         var options = $(".option").length;
         // lol it's Nintendo Switch
         switch(options) {
@@ -318,6 +348,8 @@ function setupPostForm2() {
         Olv.EntryForm.setupFormStatus($("#post-form"), $.Deferred());
     }
     function deleteOption() {
+        var currHeight = parseInt(postForm.css('maxHeight'), 10);
+        postForm.css({'max-height': `${currHeight - 50}px`, 'height': `${currHeight - 50}px`});
         var options = $(".option").length;
         if(options == 5 || options == 4) {
             $(".add-option").removeAttr("disabled");
@@ -347,22 +379,24 @@ function setupPostForm2() {
 }
 
 function expandTextBox() {
-    var postForm = $("#post-form");
-    if (postForm.length === 0) postForm = $("#reply-form");
-    var newHeight;
-    var currHeight = parseInt(postForm.css('maxHeight'), 10)
-    if (!postForm.hasClass("expanded")) {
-        newHeight = currHeight + 500;
-        postForm.css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
-        postForm.addClass("expanded");
-        $("#expand-textarea").addClass("expanded");
-        $("#post-textarea").addClass("expanded");
-    } else {
-        newHeight = currHeight - 500;
-        postForm.css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
-        postForm.removeClass("expanded");
-        $("#expand-textarea").removeClass("expanded");
-        $("#post-textarea").removeClass("expanded");
+    if (!$("div.textarea-with-menu").hasClass("active-memo")) {
+        var postForm = $("#post-form");
+        if (postForm.length === 0) postForm = $("#reply-form");
+        var newHeight;
+        var currHeight = parseInt(postForm.css('maxHeight'), 10);
+        if (!postForm.hasClass("expanded")) {
+            newHeight = currHeight + 500;
+            postForm.css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
+            postForm.addClass("expanded");
+            $("#expand-textarea").addClass("expanded");
+            $("#post-textarea").addClass("expanded");
+        } else {
+            newHeight = currHeight - 500;
+            postForm.css({'max-height': `${newHeight}px`, 'height': `${newHeight}px`});
+            postForm.removeClass("expanded");
+            $("#expand-textarea").removeClass("expanded");
+            $("#post-textarea").removeClass("expanded");
+        }
     }
 }
 
